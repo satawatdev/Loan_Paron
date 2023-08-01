@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "39343216351",
+    "project_id": "paron-application",
+    "storage_bucket": "paron-application.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:39343216351:android:6e5116fe2934f572fc7b6a",
+        "android_client_info": {
+          "package_name": "com.example.debtor_check"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "39343216351-tluofiqospn4pck05pm2lbp2nmdtummj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtBOR1Sa5u4Urcun2pIaaT8-cIHfXfGEE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "39343216351-tluofiqospn4pck05pm2lbp2nmdtummj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
