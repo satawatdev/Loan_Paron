@@ -64,19 +64,32 @@ class _HomeScreenState extends State<HomeScreen> {
                       var data = filteredData[index];
                       return Padding(
                         padding: const EdgeInsets.all(4.0),
-                        child: images == null
-                            ? CircularProgressIndicator()
-                            : Column(
-                                children: [
-                                  listTile(
-                                    profileImage: images,
-                                    username:
-                                        'ชื่อ ${data['name']}  ${data['lastname']}',
-                                    message: 'รายละเอียด',
-                                    time: 'สถานะ',
-                                  ),
-                                ],
-                              ),
+                        child: Column(
+                          children: [
+                            listTile(
+                              profileImage: images,
+                              username:
+                                  'ชื่อ ${data['name']}  ${data['lastname']}',
+                              message: 'รายละเอียด',
+                              time: 'สถานะ',
+                              ontap: () {
+                                Navigator.pushNamed(context, '/detail',
+                                    arguments: {
+                                      'name': '${data['name']}',
+                                      'lastname': '${data['lastname']}',
+                                      'old': '${data['old']}',
+                                      'phone': '${data['phone']}',
+                                      'address': '${data['address']}',
+                                      'LoanAmount': '${data['LoanAmount']}',
+                                      'InterestAmount':
+                                          '${data['InterestAmount']}',
+                                      'day': '${data['day']}',
+                                    });
+                                debugPrint('กดรายชื่อ');
+                              },
+                            ),
+                          ],
+                        ),
                       );
                     },
                   ),

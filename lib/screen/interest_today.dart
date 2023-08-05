@@ -67,6 +67,9 @@ class _interestTodayState extends State<interestToday> {
                           username: 'ชื่อ ${filteredData[index]}',
                           message: 'รายละเอียด',
                           time: 'สถานะ',
+                          ontap: () {
+                            debugPrint('กดรายชื่อ');
+                          },
                         ),
                       ],
                     ),

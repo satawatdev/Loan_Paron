@@ -14,7 +14,7 @@ class _errorscreenState extends State<errorscreen> {
       appBar: AppBar(
         title: Text('Error'),
       ),
-      body: Center(
+      body: const Center(
         child: Text(' ไม่สามารถเชื่อมต่อฐานข้อมูลได้'),
       ),
     );

@@ -5,6 +5,7 @@ Widget listTile({
   required String username,
   required String message,
   required String time,
+  required VoidCallback ontap,
 }) {
   return Container(
     decoration: BoxDecoration(
@@ -29,6 +30,7 @@ Widget listTile({
       ),
       subtitle: Text(message),
       trailing: Text(time),
+      onTap: ontap,
     ),
   );
 }

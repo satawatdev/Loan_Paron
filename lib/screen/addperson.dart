@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:debtor_check/add_on/button.dart';
+import 'package:debtor_check/add_on/submitbutton.dart';
 import 'package:debtor_check/add_on/chek_box.dart';
 import 'package:debtor_check/add_on/dropdown.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -17,13 +17,22 @@ class addperson extends StatefulWidget {
 //? ส่วนนี้ใว้ประกาศตัวแปล___________________________________
 final _formKey = GlobalKey<FormState>();
 bool isSaving = false; // ตัวแปรสำหรับเก็บสถานะการบันทึกข้อมูล (loading)
+
+//todo controlor ขั้อมูลส่วนบุคคล
 TextEditingController ctlname = TextEditingController();
 TextEditingController ctlLastname = TextEditingController();
-TextEditingController ctlmonney = TextEditingController();
-TextEditingController ctlloan = TextEditingController();
+TextEditingController ctlold = TextEditingController();
+TextEditingController ctlphone = TextEditingController();
 TextEditingController ctladdress = TextEditingController();
-TextEditingController ctlphoto = TextEditingController();
-//
+//todo controlor ขั้อมูลรายละเอียดกู้เงิน
+TextEditingController ctltimenow = TextEditingController();
+TextEditingController ctlLoanAmount = TextEditingController();
+TextEditingController ctlInterestAmount = TextEditingController();
+final List<String> items = [
+  '10 วัน',
+  '15 วัน',
+  '30 วัน',
+];
 
 //เตรี่ยม firebase
 final Future<FirebaseApp> firebase = Firebase.initializeApp();
@@ -32,18 +41,19 @@ CollectionReference usercollection =
 
 //? __________________________________________________
 
-final List<String> items = [
-  'รอบ 10 วัน',
-  'รอบ 15 วัน',
-  'รอบ 30 วัน',
-];
-var selectedValue = 'รอบ 10 วัน';
+var selectedValue = '10 วัน';
 
 //todo ส่วนนี้ใว้ทำ Function___________________________________
 void onResetTextEditingControllerAll() {
   ctlname.clear();
   ctlLastname.clear();
-  selectedValue = 'รอบ 10 วัน';
+  ctlold.clear();
+  ctlphone.clear();
+  ctladdress.clear();
+  ctltimenow.clear();
+  ctlLoanAmount.clear();
+  ctlInterestAmount.clear();
+  selectedValue = '10 วัน';
 }
 //todo __________________________________________________
 
@@ -114,62 +124,77 @@ class _addpersonState extends State<addperson> {
                                 labelText: 'นามสกุล',
                               ),
                             ),
-                            // Padding(
-                            //   padding: const EdgeInsets.all(8.0),
-                            //   child: StyledFormField(
-                            //     validator: (value) {
-                            //       if (value == null || value.isEmpty) {
-                            //         return 'กรุณากรอกที่อยู่';
-                            //       }
-                            //       return null; // Return null if the input is valid
-                            //     },
-                            //     controller: ctladdress,
-                            //     icon: Icons.location_on_outlined,
-                            //     labelText: 'ที่อยู่',
-                            //   ),
-                            // ),
-                            // Padding(
-                            //   padding: const EdgeInsets.all(8.0),
-                            //   child: StyledFormField(
-                            //     validator: (value) {
-                            //       if (value == null || value.isEmpty) {
-                            //         return 'กรุณากรอกนามสกุล';
-                            //       }
-                            //       return null; // Return null if the input is valid
-                            //     },
-                            //     controller: ctlphoto,
-                            //     icon: Icons.photo_camera_front_outlined,
-                            //     labelText: 'รูปภาพสัญญา',
-                            //   ),
-                            // ),
-                            // Padding(
-                            //   padding: const EdgeInsets.all(8.0),
-                            //   child: StyledFormField(
-                            //     validator: (value) {
-                            //       if (value == null || value.isEmpty) {
-                            //         return 'กรุณากรอกยอดเงินกู้';
-                            //       }
-                            //       return null; // Return null if the input is valid
-                            //     },
-                            //     controller: ctlmonney,
-                            //     icon: Icons.monetization_on_outlined,
-                            //     labelText: 'ยอดเงินกู้',
-                            //   ),
-                            // ),
-                            // Padding(
-                            //   padding: const EdgeInsets.all(8.0),
-                            //   child: StyledFormField(
-                            //     validator: (value) {
-                            //       if (value == null || value.isEmpty) {
-                            //         return 'กรุณากรอกดอกเบี้ย';
-                            //       }
-                            //       return null; // Return null if the input is valid
-                            //     },
-                            //     controller: ctlloan,
-                            //     icon: Icons.monetization_on_outlined,
-                            //     labelText: 'ดอกเบี้ย',
-                            //   ),
-                            // ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: StyledFormField(
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'กรุณากรอกที่อยู่';
+                                  }
+                                  return null; // Return null if the input is valid
+                                },
+                                controller: ctlold,
+                                icon: Icons.location_on_outlined,
+                                labelText: 'อายุ',
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: StyledFormField(
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'กรุณากรอกที่อยู่';
+                                  }
+                                  return null; // Return null if the input is valid
+                                },
+                                controller: ctlphone,
+                                icon: Icons.location_on_outlined,
+                                labelText: 'เบอร์โทร',
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: StyledFormField(
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'กรุณากรอกที่อยู่';
+                                  }
+                                  return null; // Return null if the input is valid
+                                },
+                                controller: ctladdress,
+                                icon: Icons.location_on_outlined,
+                                labelText: 'ที่อยู่',
+                              ),
+                            ),
+
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: StyledFormField(
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'กรุณากรอกยอดเงินกู้';
+                                  }
+                                  return null; // Return null if the input is valid
+                                },
+                                controller: ctlLoanAmount,
+                                icon: Icons.monetization_on_outlined,
+                                labelText: 'ยอดเงินกู้',
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: StyledFormField(
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'กรุณากรอกดอกเบี้ย';
+                                  }
+                                  return null; // Return null if the input is valid
+                                },
+                                controller: ctlInterestAmount,
+                                icon: Icons.monetization_on_outlined,
+                                labelText: 'ดอกเบี้ย',
+                              ),
+                            ),
                             //!dropdown_________________
                             Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -209,14 +234,23 @@ class _addpersonState extends State<addperson> {
                                     await usercollection.add({
                                       'name': ctlname.text,
                                       'lastname': ctlLastname.text,
-                                      'day': selectedValue.toString()
+                                      'old': ctlold.text,
+                                      'phone': ctlphone.text,
+                                      'address': ctladdress.text,
+                                      'LoanAmount': ctlLoanAmount.text,
+                                      'InterestAmount': ctlInterestAmount.text,
+                                      'day': selectedValue.toString(),
                                     });
                                     setState(() {
                                       isSaving =
                                           false; // กำหนดให้ปุ่มหยุดหมุนเมื่อบันทึกข้อมูลเสร็จสิ้น
                                       onResetTextEditingControllerAll();
-                                      SnackBar(
-                                          content: Text('บันทึกข้อมูลสำเร็จ'));
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text('เพิ่มข้อมูลสำเร็จ!'),
+                                        ),
+                                      );
                                     });
                                   } /* else {
                                     print(
