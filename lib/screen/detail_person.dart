@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:debtor_check/add_on/RoundedGreenButton.dart';
 import 'package:debtor_check/add_on/richText.dart';
 import 'package:flutter/material.dart';
@@ -15,46 +17,150 @@ class _ProfileScreenState extends State<ProfileScreen> {
     //todo รับข้อมูลที่ส่งมาจากหน้าก่อนหน้า
     final Map<String, dynamic>? arguments =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('รายละเอียด'),
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.delete))],
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.edit_square),
+            tooltip: 'แก้ไขข้อมูล',
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.delete_forever),
+            tooltip: 'ลบข้อมูลทั้งหมด',
+          )
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => ImagePage(),
+            arguments!['img'] != ''
+                ? InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ImagePage(),
+                          settings: RouteSettings(
+                              arguments: {'img': '${arguments['img']}'}),
+                        ),
+                      );
+                      // _showImageDialog(context);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Card(
+                        elevation: 4.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: Column(
+                          children: [
+                            const Text(
+                              'ภาพสัญญากู้ยืมเงิน',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            FutureBuilder<void>(
+                              // ใช้ FutureBuilder เพื่อตรวจสอบว่าภาพโหลดเสร็จหรือยัง
+                              future: precacheImage(
+                                  NetworkImage(arguments['img']), context),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<void> snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  // กำลังโหลดภาพ
+                                  return const Center(
+                                    child: Column(
+                                      children: [
+                                        CircularProgressIndicator(),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text('กำลังโหลดภาพ...')
+                                      ],
+                                    ),
+                                  );
+                                } else {
+                                  // ภาพโหลดเสร็จแล้ว
+                                  return Image.network(
+                                    arguments[
+                                        'img'], // URL ของรูปภาพที่ต้องการแสดงใน Card
+                                    fit: BoxFit.cover,
+                                    height: 200,
+                                  );
+                                }
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Card(
+                      elevation: 4.0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: const Column(
+                        children: [
+                          Text(
+                            'ภาพสัญญากู้ยืมเงิน',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Text("ไม่มีภาพ")
+                        ],
+                      ),
+                    ),
                   ),
-                );
-                // _showImageDialog(context);
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Card(
-                  elevation: 4.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
+            Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Card(
+                elevation: 4.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      Text(
-                        'ภาพสัญญากู้ยืมเงิน',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          customtextspancolor(
+                              text1: 'สถานะ',
+                              text2: "ค้างชำระ",
+                              colortext1: Colors.black,
+                              colortext2: Colors.red),
+                          // Icon(
+                          //   Icons.close_sharp,
+                          //   color: Colors.red,
+                          // )
+                        ],
                       ),
                       SizedBox(
-                        height: 15,
-                      ),
-                      Image.network(
-                        'https://www.dharmniti.co.th/wp-content/uploads/2019/09/1-6-300x193.png', // URL ของรูปภาพที่ต้องการแสดงใน Card
-                        fit: BoxFit.cover,
-                        height: 200,
+                        height: 1, // ความหนาของเส้น Divider
+                        child: Container(
+                          color: Colors.black, // สีของเส้น Divider
+                        ),
                       ),
                     ],
                   ),
@@ -146,7 +252,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       customtextspan(
                         text1: 'จ่ายดอกเบี้ยทุก: ',
-                        text2: '${arguments['day']}',
+                        text2: '${arguments['day']} วัน',
                       ),
                     ],
                   ),
@@ -180,11 +286,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       customtextspan(
                         text1: 'จำนวนเงินกู้: ',
-                        text2: '1,000 บาท ',
+                        text2: '${arguments['InterestAmount'] + ' บาท'}',
                       ),
                       customtextspan(
                         text1: 'จำนวนดอกเบี้ย: ',
-                        text2: '200 บาท',
+                        text2: '${arguments['InterestAmount'] + ' บาท'}',
                       ),
                       SizedBox(height: 4),
                       Row(
@@ -305,13 +411,15 @@ void _showImageDialog(BuildContext context) {
 class ImagePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final Map<String, dynamic>? arguments =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     return Scaffold(
       appBar: AppBar(
         title: Text('ภาพสัญญากู้ยืมเงิน'),
       ),
       body: Center(
         child: Image.network(
-          'https://www.dharmniti.co.th/wp-content/uploads/2019/09/1-6-300x193.png',
+          '${arguments!['img']}',
           fit: BoxFit.contain,
         ),
       ),

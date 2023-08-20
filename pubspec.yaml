@@ -46,6 +46,10 @@ dependencies:
   sqflite: ^2.3.0
   postgres: ^2.6.2
   cloud_firestore: ^4.8.4
+  image_picker: ^1.0.2
+  video_player: ^2.7.0
+  firebase_storage: ^11.2.5
+  intl: ^0.18.0
 
 
 

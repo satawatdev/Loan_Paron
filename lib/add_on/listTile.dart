@@ -4,7 +4,7 @@ Widget listTile({
   required String profileImage,
   required String username,
   required String message,
-  required String time,
+  required String trailing,
   required VoidCallback ontap,
 }) {
   return Container(
@@ -21,15 +21,16 @@ Widget listTile({
       ],
     ),
     child: ListTile(
-      leading: CircleAvatar(
-        backgroundImage: NetworkImage(profileImage),
-      ),
+      //todo: เปิดคอมเม้นนี้ถ้าต้องการรูป listTile
+      // leading: CircleAvatar(
+      //   backgroundImage: NetworkImage(profileImage),
+      // ),
       title: Text(
         username,
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
       subtitle: Text(message),
-      trailing: Text(time),
+      trailing: Text(trailing),
       onTap: ontap,
     ),
   );

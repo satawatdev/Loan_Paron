@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debtor_check/add_on/listTile.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +10,26 @@ class interestToday extends StatefulWidget {
 }
 
 class _interestTodayState extends State<interestToday> {
+  //! เช็ครายชื่อเมือครบ 15 วัน
+  void checkAndShowUsers() async {
+    final now = DateTime.now();
+    final usersCollection = FirebaseFirestore.instance.collection('user');
+
+    final QuerySnapshot usersSnapshot = await usersCollection.get();
+
+    for (QueryDocumentSnapshot userSnapshot in usersSnapshot.docs) {
+      final userData = userSnapshot.data() as Map<String, dynamic>;
+      final registrationDate = userData['registrationDate'] as Timestamp;
+
+      final daysPassed = now.difference(registrationDate.toDate()).inDays;
+
+      if (daysPassed >= 15) {
+        // แสดงรายชื่อคนที่ครบกำหนด
+        print('User ${userData['name']} ${userData['lastname']} is due.');
+      }
+    }
+  }
+
   List<String> originalData = [
     "Apple",
     "Banana",
@@ -66,7 +87,7 @@ class _interestTodayState extends State<interestToday> {
                               'https://i.pinimg.com/736x/5e/b7/4e/5eb74ed4073e2320a23e80fb3554a6c8.jpg',
                           username: 'ชื่อ ${filteredData[index]}',
                           message: 'รายละเอียด',
-                          time: 'สถานะ',
+                          trailing: 'สถานะ',
                           ontap: () {
                             debugPrint('กดรายชื่อ');
                           },

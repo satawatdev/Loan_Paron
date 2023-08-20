@@ -49,8 +49,20 @@ import 'package:debtor_check/screen/tabbar.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:postgres/postgres.dart';
+
+import 'model/model_person.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 void main() async {
+  // try {
+  //   await operation();
+  // } catch (e) {
+  //   runApp(ErrorApp()); // แสดงหน้า Errorscreen
+  //   return;
+  // }
+
   WidgetsFlutterBinding.ensureInitialized();
   // เช็คการเชื่อมต่อกับ Firebase
   try {
@@ -70,6 +82,24 @@ void main() async {
 
   runApp(const MyApp());
 }
+
+//!connectdatabase ตอนนี่กำลังทำตรงนี้12/08/2566
+
+// Future<void> operation() async {
+//   var connection = PostgreSQLConnection(
+//     "devnickbase.csrtaabsrngd.ap-southeast-2.rds.amazonaws.com",
+//     5432,
+//     "Paron_platform",
+//     username: "postgres",
+//     password: "6KzKJk2CyUiBT8zDYVSaQUJIPaJmL6",
+//     useSSL: true,
+//   );
+//   await connection.open();
+//   print("Connected");
+//   var results = await connection.query('SELECT * FROM master.customers');
+// }
+
+//!--------------------------
 
 const Color p = Color(0xff416d69);
 //เตรียม firebase
