@@ -22,10 +22,11 @@ class RoundedGreenButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(25.0), // กำหนดความโค้งมนของปุ่ม
           ),
         ),
-        child: Text(
-          text,
-          style: TextStyle(fontSize: 20), // กำหนดขนาดตัวอักษร
-        ),
+        child: text,
+        //   Text(
+        //     text,
+        //     style: TextStyle(fontSize: 20), // กำหนดขนาดตัวอักษร
+        //   ),
       ),
     );
   }

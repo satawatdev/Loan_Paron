@@ -1,56 +1,88 @@
-// import 'package:sqflite/sqflite.dart';
-// import 'package:path/path.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 
-// class DatabaseHelper {
-//   static final DatabaseHelper _instance = DatabaseHelper._internal();
-//   factory DatabaseHelper() => _instance;
+class AddDataPage extends StatefulWidget {
+  const AddDataPage({Key? key}) : super(key: key);
 
-//   static Database? _database;
+  @override
+  _AddDataPageState createState() => _AddDataPageState();
+}
 
-//   DatabaseHelper._internal();
+class _AddDataPageState extends State<AddDataPage> {
+  final Future<FirebaseApp> firebase = Firebase.initializeApp();
+  CollectionReference monthlyData =
+      FirebaseFirestore.instance.collection('monthlyData');
 
-//   Future<Database> get database async {
-//     if (_database != null) return _database!;
+  double principal = 0.0;
+  double interest = 0.0;
+  double penalty = 0.0;
 
-//     _database = await _initDatabase();
-//     return _database!;
-//   }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('เพิ่มข้อมูล'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextFormField(
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(labelText: 'เงินต้น'),
+              onChanged: (value) {
+                setState(() {
+                  principal = double.tryParse(value) ?? 0.0;
+                });
+              },
+            ),
+            TextFormField(
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(labelText: 'ดอกเบี้ย'),
+              onChanged: (value) {
+                setState(() {
+                  interest = double.tryParse(value) ?? 0.0;
+                });
+              },
+            ),
+            TextFormField(
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(labelText: 'ค่าปรับ'),
+              onChanged: (value) {
+                setState(() {
+                  penalty = double.tryParse(value) ?? 0.0;
+                });
+              },
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                addMonthData(principal, interest, penalty);
+                // กลับไปหน้า "รายงาน" หลังจากเพิ่มข้อมูล
+              },
+              child: Text('บันทึกข้อมูล'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-//   Future<Database> _initDatabase() async {
-//     String databasesPath = await getDatabasesPath();
-//     String path = join(databasesPath, 'your_database_name.db');
+  Future<void> addMonthData(
+      double principal, double interest, double penalty) async {
+    final currentMonth = DateTime.now().month;
+    final currentYear = DateTime.now().year;
 
-//     // เปิดหรือสร้างฐานข้อมูล
-//     return await openDatabase(
-//       path,
-//       version: 1,
-//       onCreate: _onCreate,
-//     );
-//   }
+    final data = {
+      'year': currentYear,
+      'month': currentMonth,
+      'principal': principal,
+      'interest': interest,
+      'penalty': penalty,
+    };
 
-//   void _onCreate(Database db, int version) async {
-//     // สร้างตารางและกำหนดรายละเอียดต่าง ๆ ของตาราง
-//     await db.execute('''
-//       CREATE TABLE your_table_name (
-//         id INTEGER PRIMARY KEY,
-//         column1 TEXT,
-//         column2 INTEGER
-//         -- เพิ่มคอลัมน์ตามต้องการ
-//       )
-//     ''');
-//   }
-
-//   // ฟังก์ชันเพิ่มข้อมูลลงในตาราง
-//   Future<int> insertData(Map<String, dynamic> data) async {
-//     final db = await database;
-//     return await db.insert('your_table_name', data);
-//   }
-
-//   // ฟังก์ชันดึงข้อมูลทั้งหมดจากตาราง
-//   Future<List<Map<String, dynamic>>> getAllData() async {
-//     final db = await database;
-//     return await db.query('your_table_name');
-//   }
-
-//   // เพิ่มฟังก์ชันอื่น ๆ ตามความต้องการ
-// }
+    await monthlyData.add(data);
+  }
+}

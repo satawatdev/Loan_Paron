@@ -70,7 +70,7 @@ class _CustomDropdownButtonState extends State<CustomDropdownButton> {
             border: Border.all(
               color: Colors.black26,
             ),
-            color: Colors.blue,
+            color: Theme.of(context).colorScheme.primary,
           ),
           elevation: 2,
         ),
@@ -87,7 +87,7 @@ class _CustomDropdownButtonState extends State<CustomDropdownButton> {
           width: 200,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),
-            color: Colors.blue,
+            color: Theme.of(context).colorScheme.primary,
           ),
           offset: const Offset(-20, 0),
           scrollbarTheme: ScrollbarThemeData(

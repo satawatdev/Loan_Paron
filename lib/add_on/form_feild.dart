@@ -5,12 +5,14 @@ class StyledFormField extends StatelessWidget {
   final String labelText;
   final TextEditingController controller;
   final FormFieldValidator validator;
+  final TextInputType keyboardType;
 
   StyledFormField({
     required this.icon,
     required this.labelText,
     required this.controller,
     required this.validator,
+    required this.keyboardType,
   });
 
   @override
@@ -29,6 +31,7 @@ class StyledFormField extends StatelessWidget {
         ],
       ),
       child: TextFormField(
+        keyboardType: keyboardType,
         validator: validator,
         controller: controller,
         decoration: InputDecoration(
