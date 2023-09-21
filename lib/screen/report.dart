@@ -15,8 +15,8 @@ class _ReportPageState extends State<ReportPage> {
     super.initState();
   }
 
-//! ตอนนนี้ได้วิธีมาแล้วเราก็แค่ เอาข้อมูลที่เลือกและแวหาตามที่ต้องการและเอามาโชโดยการวนลูบหาข้อมูลแต่ละตัวที่แวมาแล้วเอามาบวกกันเฉยๆ
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   final List<String> months = [
     'มกราคม',
     'กุมภาพันธ์',
@@ -31,7 +31,7 @@ class _ReportPageState extends State<ReportPage> {
     'พฤศจิกายน',
     'ธันวาคม',
   ];
-
+  int monthNow = DateTime.now().month;
   String selectedMonth = 'มกราคม'; // เดือนเริ่มต้น
   int selectedYear = DateTime.now().year; // ปีปัจจุบัน
   var fine = 0;
@@ -94,7 +94,7 @@ class _ReportPageState extends State<ReportPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('รายงาน'),
+        title: const Text('สรุปรายรับ'),
       ),
       body: Column(
         children: [
@@ -166,22 +166,22 @@ class _ReportPageState extends State<ReportPage> {
               ),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'จำนวนคนที่เก็บเดือนที่เลือก:  ',
-                  style: TextStyle(fontSize: 20),
-                ),
-                Text(
-                  ' บาท',
-                  style: TextStyle(fontSize: 20),
-                ),
-              ],
-            ),
-          ),
+          // const Padding(
+          //   padding: EdgeInsets.symmetric(vertical: 10),
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //     children: [
+          //       Text(
+          //         'จำนวนคนที่เก็บเดือนที่เลือก:  ',
+          //         style: TextStyle(fontSize: 20),
+          //       ),
+          //       Text(
+          //         ' บาท',
+          //         style: TextStyle(fontSize: 20),
+          //       ),
+          //     ],
+          //   ),
+          // ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Padding(
@@ -202,22 +202,22 @@ class _ReportPageState extends State<ReportPage> {
                 ),
                 child: Column(
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'เงินต้น: ',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                          Text(
-                            ' บาท',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        ],
-                      ),
-                    ),
+                    // const Padding(
+                    //   padding: EdgeInsets.symmetric(vertical: 10),
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //     children: [
+                    //       Text(
+                    //         'เงินต้น: ',
+                    //         style: TextStyle(fontSize: 20),
+                    //       ),
+                    //       Text(
+                    //         ' บาท',
+                    //         style: TextStyle(fontSize: 20),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                     const Divider(
                       height: 5,
                       color: Colors.black,

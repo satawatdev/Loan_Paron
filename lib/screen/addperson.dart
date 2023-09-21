@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debtor_check/add_on/submitbutton.dart';
 import 'package:debtor_check/add_on/chek_box.dart';
 import 'package:debtor_check/add_on/dropdown.dart';
+import 'package:debtor_check/screen/errorscreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -115,73 +116,80 @@ class _addpersonState extends State<addperson> {
 
   //todo: ฟังชั่นเพิ่มข้อมูลเข้าฐานข้อมูล
   addata() async {
-    if (_formKey.currentState!.validate()) {
-      if (_image != null) {
-        setState(() {
-          isSaving = true; // แสดงสถานะ loading เมื่อกดปุ่ม
-        });
+    try {
+      if (_formKey.currentState!.validate()) {
+        if (_image != null) {
+          setState(() {
+            isSaving = true; // แสดงสถานะ loading เมื่อกดปุ่ม
+          });
 
-        List<String> imageUrls = await uploadImagesToFirebaseStorage(_image);
+          List<String> imageUrls = await uploadImagesToFirebaseStorage(_image);
 
-        await usercollection.add({
-          'name': ctlname.text,
-          'lastname': ctlLastname.text,
-          'old': ctlold.text,
-          'phone': ctlphone.text,
-          'address': ctladdress.text,
-          'LoanAmount': ctlLoanAmount.text,
-          'InterestAmount': ctlInterestAmount.text,
-          'day': selectedValue.toString(),
-          'img': imageUrls,
-          'selectedtime': selectedDate,
-          'timenow': timeNow,
-          'timeInterest': selectedDate
-        });
-        setState(
-          () {
-            isSaving = false; // กำหนดให้ปุ่มหยุดหมุนเมื่อบันทึกข้อมูลเสร็จสิ้น
-            onResetTextEditingControllerAll();
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('เพิ่มข้อมูลสำเร็จ!'),
-              ),
-            );
-          },
-        );
-      } else {
-        setState(() {
-          isSaving = true; //* แสดงสถานะ loading เมื่อกดปุ่ม
-        });
+          await usercollection.add({
+            'name': ctlname.text,
+            'lastname': ctlLastname.text,
+            'old': ctlold.text,
+            'phone': ctlphone.text,
+            'address': ctladdress.text,
+            'LoanAmount': ctlLoanAmount.text,
+            'InterestAmount': ctlInterestAmount.text,
+            'day': selectedValue.toString(),
+            'img': imageUrls,
+            'selectedtime': selectedDate,
+            'timenow': timeNow,
+            'timeInterest': selectedDate
+          });
+          setState(
+            () {
+              isSaving =
+                  false; // กำหนดให้ปุ่มหยุดหมุนเมื่อบันทึกข้อมูลเสร็จสิ้น
+              onResetTextEditingControllerAll();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('เพิ่มข้อมูลสำเร็จ!'),
+                ),
+              );
+            },
+          );
+        } else {
+          setState(() {
+            isSaving = true; //* แสดงสถานะ loading เมื่อกดปุ่ม
+          });
 
-        // await uploadImageAndDataToFirestore(
-        //     _image!);
+          // await uploadImageAndDataToFirestore(
+          //     _image!);
 
-        await usercollection.add({
-          'name': ctlname.text,
-          'lastname': ctlLastname.text,
-          'old': ctlold.text,
-          'phone': ctlphone.text,
-          'address': ctladdress.text,
-          'LoanAmount': ctlLoanAmount.text,
-          'InterestAmount': ctlInterestAmount.text,
-          'day': selectedValue.toString(),
-          'img': imageUrls,
-          'selectedtime': selectedDate,
-          'timenow': timeNow,
-          'timeInterest': selectedDate
-        });
-        setState(
-          () {
-            isSaving = false; //* กำหนดให้ปุ่มหยุดหมุนเมื่อบันทึกข้อมูลเสร็จสิ้น
-            onResetTextEditingControllerAll();
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('เพิ่มข้อมูลสำเร็จ!'),
-              ),
-            );
-          },
-        );
+          await usercollection.add({
+            'name': ctlname.text,
+            'lastname': ctlLastname.text,
+            'old': ctlold.text,
+            'phone': ctlphone.text,
+            'address': ctladdress.text,
+            'LoanAmount': ctlLoanAmount.text,
+            'InterestAmount': ctlInterestAmount.text,
+            'day': selectedValue.toString(),
+            'img': imageUrls,
+            'selectedtime': selectedDate,
+            'timenow': timeNow,
+            'timeInterest': selectedDate
+          });
+          setState(
+            () {
+              isSaving =
+                  false; //* กำหนดให้ปุ่มหยุดหมุนเมื่อบันทึกข้อมูลเสร็จสิ้น
+              onResetTextEditingControllerAll();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('เพิ่มข้อมูลสำเร็จ!'),
+                ),
+              );
+            },
+          );
+        }
       }
+    } catch (e) {
+      runApp(errorscreen());
+      print('แตกฟังชัน addata เออเร่อ = ' + e.toString());
     }
   }
 
@@ -202,7 +210,7 @@ class _addpersonState extends State<addperson> {
     return await showDatePicker(
       context: context,
       initialDate: initialDate ?? DateTime.now(),
-      firstDate: DateTime(1900),
+      firstDate: DateTime(2000),
       lastDate: DateTime.now(),
     );
   }

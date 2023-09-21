@@ -41,7 +41,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         title: Text('รายละเอียด'),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, '/EditPage', arguments: {
+                'docID': '${arguments['docID']}',
+              });
+            },
             icon: Icon(Icons.edit_square),
             tooltip: 'แก้ไขข้อมูล',
           ),
@@ -569,24 +573,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     payinterastmonney() async {
       //เตรี่ยม firebase
-      final Future<FirebaseApp> firebase = Firebase.initializeApp();
-      CollectionReference usercollection =
-          FirebaseFirestore.instance.collection('user');
 
-      await usercollection
-          .doc(arguments!['docID'])
-          .update({'InterestAmount': '0', 'timeInterest': timenow});
+      try {
+        print('เข้า try จ่ายดอกเบี้ย');
+        final Future<FirebaseApp> firebase = Firebase.initializeApp();
+        CollectionReference usercollection =
+            FirebaseFirestore.instance.collection('user');
 
-      Navigator.pop(context);
+        await usercollection
+            .doc(arguments!['docID'])
+            .update({'InterestAmount': '0', 'timeInterest': timenow});
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('จ่ายดอกเบี้ยและค่าปรับสำเร็จ!'),
-        ),
-      );
+        Navigator.pop(context);
 
-      Navigator.pop(context);
-      admonneyFormount();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('จ่ายดอกเบี้ยและค่าปรับสำเร็จ!'),
+          ),
+        );
+
+        Navigator.pop(context);
+        admonneyFormount();
+      } catch (e) {
+        print('ออก catch จ่ายดอกเบี้ย เออเร่อ =' + e.toString());
+      }
     }
 
     double cardHeight = MediaQuery.of(context).size.height *
@@ -650,7 +660,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 100),
+                  SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [

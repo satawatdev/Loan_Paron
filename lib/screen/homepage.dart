@@ -30,14 +30,26 @@ class _HomeScreenState extends State<HomeScreen> {
 
   //todo:function----------------------------------------------------------------
 
-  //todo:calldata
-  Future<List<DocumentSnapshot>> fetchUserData() async {
-    final snapshot = await FirebaseFirestore.instance
+  // //todo:calldataNoRealtimeData
+  // Future<List<DocumentSnapshot>> fetchUserData() async {
+  //   final snapshot = await FirebaseFirestore.instance
+  //       .collection('user')
+  //       .orderBy('timenow',
+  //           descending: true) //* เรียงลำดับตามเวลาที่สร้างข้อมูลจากมากไปน้อย
+  //       .get();
+  //   return snapshot.docs;
+  // }
+
+  //todo CallDataRealtime
+  Future<List<DocumentSnapshot>> fetchUserDataRealtime() async {
+    final stream = FirebaseFirestore.instance
         .collection('user')
-        .orderBy('timenow',
-            descending: true) //* เรียงลำดับตามเวลาที่สร้างข้อมูลจากมากไปน้อย
-        .get();
-    return snapshot.docs;
+        .orderBy('timenow', descending: true)
+        .snapshots();
+
+    final querySnapshot = await stream.first;
+
+    return querySnapshot.docs;
   }
 
 //!widgets
@@ -64,6 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: ListView.builder(
               itemCount: snapshots.length,
               itemBuilder: (context, index) {
+                print('ค่ารายชื่อทั้งหมดมี = ' + snapshots.length.toString());
                 var userData = snapshots[index].data() as Map<String, dynamic>;
                 // todo: logic วันเวลาสถานะที่จะแสดง________________________________________
                 //*ค่าวันเวลาจากดาต้า
@@ -296,7 +309,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         body: FutureBuilder<List<DocumentSnapshot>>(
-          future: fetchUserData(),
+          future: fetchUserDataRealtime(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const Center(

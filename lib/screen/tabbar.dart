@@ -39,7 +39,7 @@ class _tabbarState extends State<tabbar> {
         style: TabStyle.react,
         items: const [
           TabItem(icon: Icons.person, title: 'รายชื่อ'),
-          TabItem(icon: Icons.assessment, title: 'ประวัติ'),
+          TabItem(icon: Icons.assessment, title: 'สรุปรายรับ'),
           TabItem(icon: Icons.person_add, title: 'เพิ่มรายชื่อ'),
           // TabItem(icon: Icons.person_add, title: 'หน้าเทสเพิ่มข้อมูล'),
         ],

@@ -1,4 +1,7 @@
+import 'package:debtor_check/firebase_options.dart';
 import 'package:debtor_check/screen/detail_person.dart';
+import 'package:debtor_check/screen/editDetail.dart';
+import 'package:debtor_check/screen/editDetail.dart';
 import 'package:debtor_check/screen/errorscreen.dart';
 import 'package:debtor_check/screen/tabbar.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -6,13 +9,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   //* เช็คการเชื่อมต่อกับ Firebase
   try {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
   } catch (e) {
+    print(e.toString());
     // หากเกิดข้อผิดพลาดในการเชื่อมต่อกับ Firebase
     runApp(ErrorApp()); //* แสดงหน้า Errorscreen
     return;
@@ -50,12 +55,13 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Corona Out',
       theme: ThemeData(
-        primarySwatch: Colors.pink,
+        primarySwatch: Colors.blueGrey,
         primaryColor: p,
       ),
       routes: {
         '/': (context) => tabbar(),
         '/detail': (context) => ProfileScreen(),
+        '/EditPage': (context) => EditPage(),
       },
     );
   }
