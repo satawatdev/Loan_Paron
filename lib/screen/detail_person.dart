@@ -44,6 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onPressed: () {
               Navigator.pushNamed(context, '/EditPage', arguments: {
                 'docID': '${arguments['docID']}',
+                'img': '${arguments['img']}',
               });
             },
             icon: Icon(Icons.edit_square),

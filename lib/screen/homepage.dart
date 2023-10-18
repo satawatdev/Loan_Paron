@@ -30,16 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   //todo:function----------------------------------------------------------------
 
-  // //todo:calldataNoRealtimeData
-  // Future<List<DocumentSnapshot>> fetchUserData() async {
-  //   final snapshot = await FirebaseFirestore.instance
-  //       .collection('user')
-  //       .orderBy('timenow',
-  //           descending: true) //* เรียงลำดับตามเวลาที่สร้างข้อมูลจากมากไปน้อย
-  //       .get();
-  //   return snapshot.docs;
-  // }
-
   //todo CallDataRealtime
   Future<List<DocumentSnapshot>> fetchUserDataRealtime() async {
     final stream = FirebaseFirestore.instance

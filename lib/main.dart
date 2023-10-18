@@ -2,6 +2,7 @@ import 'package:debtor_check/firebase_options.dart';
 import 'package:debtor_check/screen/detail_person.dart';
 import 'package:debtor_check/screen/editDetail.dart';
 import 'package:debtor_check/screen/editDetail.dart';
+import 'package:debtor_check/screen/edit_oldphoto.dart';
 import 'package:debtor_check/screen/errorscreen.dart';
 import 'package:debtor_check/screen/tabbar.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -60,8 +61,9 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/': (context) => tabbar(),
-        '/detail': (context) => ProfileScreen(),
-        '/EditPage': (context) => EditPage(),
+        '/detail': (context) => const ProfileScreen(),
+        '/EditPage': (context) => const EditPage(),
+        '/editoldphoto': (context) => const EditOldPhoto(),
       },
     );
   }

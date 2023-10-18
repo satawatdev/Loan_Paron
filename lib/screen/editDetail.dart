@@ -306,7 +306,9 @@ class _EditPageState extends State<EditPage> {
         if (snapshot.connectionState == ConnectionState.done) {
           document = snapshot.data;
           var timeInterest = (document!['selectedtime'] as Timestamp).toDate();
-
+          final Map<String, dynamic>? arguments = ModalRoute.of(context)
+              ?.settings
+              .arguments as Map<String, dynamic>?;
           // var imageindata = document!['img'];
 
           // print('รูปภาพจากฐานข้อมูลทั้งหมด = ' + imageindata.toString());
@@ -357,15 +359,10 @@ class _EditPageState extends State<EditPage> {
                                                   const EdgeInsets.all(1.0),
                                               child: Column(
                                                 children: [
-                                                  Row(
+                                                  const Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment.end,
-                                                    children: [
-                                                      Checkbox(
-                                                          value: isChecked,
-                                                          onChanged:
-                                                              onChangedCallback)
-                                                    ],
+                                                    children: [],
                                                   ),
                                                   const Text(
                                                     'ภาพเดิม!',
@@ -395,8 +392,18 @@ class _EditPageState extends State<EditPage> {
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         ElevatedButton(
-                                          child: const Text('ลบรูปที่เลือก'),
-                                          onPressed: () {},
+                                          child: const Text('จักการรูปภาพเดิม'),
+                                          onPressed: () {
+                                            Navigator.pushNamed(
+                                              context,
+                                              '/editoldphoto',
+                                              arguments: {
+                                                'docID':
+                                                    '${arguments!['docID']}',
+                                                'img': '${arguments['img']}'
+                                              },
+                                            );
+                                          },
                                         ),
                                       ],
                                     ),
