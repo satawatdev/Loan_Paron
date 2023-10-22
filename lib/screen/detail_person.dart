@@ -411,9 +411,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   showdDialogpaymoney(BuildContext context) {
     Map<String, dynamic>? arguments =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-    int xx = int.parse(arguments!['InterestAmount']);
+
+    int InterestAmountInt = int.parse(arguments!['InterestAmount']);
     int xxx = int.parse(arguments!['LoanAmount']);
-    total = xx + xxx + count;
+    total = InterestAmountInt + xxx + count;
     payMonneyOnDelete() async {
       //เตรี่ยม firebase
       final Future<FirebaseApp> firebase = Firebase.initializeApp();
@@ -430,6 +431,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       );
       Navigator.pop(context);
+    }
+
+    void admonneyFormount() async {
+      DateTime timenow = DateTime.now();
+      int month = timenow.month;
+      int year = timenow.year;
+
+      final List<String> thaiMonths = [
+        'มกราคม',
+        'กุมภาพันธ์',
+        'มีนาคม',
+        'เมษายน',
+        'พฤษภาคม',
+        'มิถุนายน',
+        'กรกฎาคม',
+        'สิงหาคม',
+        'กันยายน',
+        'ตุลาคม',
+        'พฤศจิกายน',
+        'ธันวาคม'
+      ];
+
+      CollectionReference MonthlyIncomecollection =
+          FirebaseFirestore.instance.collection('MonthlyIncome');
+
+      await MonthlyIncomecollection.add(
+        {
+          'interest': InterestAmountInt,
+          'fine': count,
+          'timenow': timenow,
+          'month': thaiMonths[month - 1], // ส่งชื่อเดือนปัจจุบันเท่านั้น
+          'year': year
+        },
+      );
     }
 
     double cardHeight = MediaQuery.of(context).size.height *
@@ -494,7 +529,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 80),
+                  // SizedBox(height: 12),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -502,6 +537,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: RoundedGreenButton(
                           colors: Colors.green,
                           onPressed: () {
+                            admonneyFormount();
                             payMonneyOnDelete();
                           },
                           text: isSaving

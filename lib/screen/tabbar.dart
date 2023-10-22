@@ -34,7 +34,7 @@ class _tabbarState extends State<tabbar> {
       // ),
       body: _pages[_currentIndex],
       bottomNavigationBar: ConvexAppBar(
-        color: Colors.pink[200],
+        color: Color.fromARGB(255, 140, 211, 247),
         backgroundColor: Theme.of(context).colorScheme.primary,
         style: TabStyle.react,
         items: const [

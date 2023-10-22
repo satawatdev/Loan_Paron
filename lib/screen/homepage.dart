@@ -137,9 +137,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: ListTile(
                           title: Text(
                               'ชื่อ: ${userData['name']} ${userData['lastname']}'),
-                          subtitle: Text(
-                            'เริ่มยืม:${DateFormat('dd-MM-yyyy').format(selectedtime)} ',
-                          ),
+                          // subtitle: Text(
+                          //   'เริ่มยืม:${DateFormat('dd-MM-yyyy').format(selectedtime)} ',
+                          // ),
                           trailing: SingleChildScrollView(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -264,7 +264,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Row(
               children: [
                 DropdownButton<String>(
-                  dropdownColor: Colors.pink[700],
+                  dropdownColor: Colors.blueGrey,
                   borderRadius: BorderRadius.circular(10),
                   icon: const Icon(
                     Icons.arrow_drop_down_sharp,

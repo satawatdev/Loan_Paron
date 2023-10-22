@@ -73,13 +73,13 @@ class _EditPageState extends State<EditPage> {
 
   String selectedValue = '';
 
-  @override
-  void initState() {
-    super.initState();
-    selectedDate =
-        DateTime.now(); // กำหนดค่าเริ่มต้นให้ selectedDate เป็นวันที่ปัจจุบัน
-    originalDate = selectedDate; // บันทึกวันที่เดิม
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   selectedDate =
+  //       DateTime.now(); // กำหนดค่าเริ่มต้นให้ selectedDate เป็นวันที่ปัจจุบัน
+  //   originalDate = selectedDate; // บันทึกวันที่เดิม
+  // }
 
 //todo ส่วนนี้ใว้ทำ Function___________________________________
 
@@ -188,6 +188,100 @@ class _EditPageState extends State<EditPage> {
   }
 
   //todo: อัพเดทข้อมูลเข้าฐานข้อมูล
+  // addata() async {
+  //   if (_formKey.currentState!.validate()) {
+  //     if (_image != null) {
+  //       setState(() {
+  //         isSaving = true;
+  //       });
+
+  //       List imageUrlold = imageindata;
+  //       List<String> imageUrls = await uploadImagesToFirebaseStorage(_image);
+
+  //       var allImages = imageUrlold + imageUrls;
+
+  //       print('รูปเก่ามี = ${imageUrlold.length}' + imageUrlold.toString());
+
+  //       print('รูปใหม่มี = ${imageUrls.length}' + imageUrls.toString());
+
+  //       print('รวมรูปมี = ${allImages.length}' + allImages.toString());
+  //       String name = ctlname.text.isNotEmpty
+  //           ? ctlname.text
+  //           : (document != null ? document!['name'] : '');
+  //       String lastname = ctlLastname.text.isNotEmpty
+  //           ? ctlLastname.text
+  //           : (document != null ? document!['lastname'] : '');
+  //       String old = ctlold.text.isNotEmpty
+  //           ? ctlold.text
+  //           : (document != null ? document!['old'] : '');
+  //       String phone = ctlphone.text.isNotEmpty
+  //           ? ctlphone.text
+  //           : (document != null ? document!['phone'] : '');
+  //       String address = ctladdress.text.isNotEmpty
+  //           ? ctladdress.text
+  //           : (document != null ? document!['address'] : '');
+  //       String loanAmount = ctlLoanAmount.text.isNotEmpty
+  //           ? ctlLoanAmount.text
+  //           : (document != null ? document!['LoanAmount'] : '');
+  //       String interestAmount = ctlInterestAmount.text.isNotEmpty
+  //           ? ctlInterestAmount.text
+  //           : (document != null ? document!['InterestAmount'] : '');
+
+  //       // ตรวจสอบว่ามีการเปลี่ยนแปลงในวันที่หรือไม่
+  //       if (selectedDate != null &&
+  //           originalDate != null &&
+  //           selectedDate != originalDate) {
+  //         print('เข้าการส่งข้อมูล if ');
+  //         // มีการเปลี่ยนแปลงในวันที่
+  //         // ทำสิ่งที่คุณต้องการเมื่อมีการเปลี่ยนแปลง
+  //         await usercollection.doc(document!.id).update({
+  //           'name': name,
+  //           'lastname': lastname,
+  //           'old': old,
+  //           'phone': phone,
+  //           'address': address,
+  //           'LoanAmount': loanAmount,
+  //           'InterestAmount': interestAmount,
+  //           'day': selectedValue.toString(),
+  //           'img': allImages,
+  //           'selectedtime': selectedDate,
+  //           'timenow': timeNow,
+  //           'timeInterest': selectedDate
+  //         });
+  //       } else {
+  //         print('เข้าการส่งข้อมูล else ');
+  //         // ไม่มีการเปลี่ยนแปลงในวันที่
+  //         // ใช้วันที่เดิม
+  //         await usercollection.doc(document!.id).update({
+  //           'name': name,
+  //           'lastname': lastname,
+  //           'old': old,
+  //           'phone': phone,
+  //           'address': address,
+  //           'LoanAmount': loanAmount,
+  //           'InterestAmount': interestAmount,
+  //           'day': selectedValue.toString(),
+  //           'img': allImages,
+  //           'selectedtime': originalDate, // ใช้วันที่เดิม
+  //           'timenow': timeNow,
+  //           'timeInterest': originalDate // ใช้วันที่เดิม
+  //         });
+  //       }
+
+  //       setState(() {
+  //         isSaving = false;
+  //         onResetTextEditingControllerAll();
+  //         Navigator.pop(context);
+  //         ScaffoldMessenger.of(context).showSnackBar(
+  //           const SnackBar(
+  //             content: Text('อัพเดทข้อมูลสำเร็จ!'),
+  //           ),
+  //         );
+  //       });
+  //     }
+  //   }
+  // }
+
   addata() async {
     if (_formKey.currentState!.validate()) {
       if (_image != null) {
@@ -205,6 +299,7 @@ class _EditPageState extends State<EditPage> {
         print('รูปใหม่มี = ${imageUrls.length}' + imageUrls.toString());
 
         print('รวมรูปมี = ${allImages.length}' + allImages.toString());
+
         String name = ctlname.text.isNotEmpty
             ? ctlname.text
             : (document != null ? document!['name'] : '');
@@ -227,11 +322,10 @@ class _EditPageState extends State<EditPage> {
             ? ctlInterestAmount.text
             : (document != null ? document!['InterestAmount'] : '');
 
-        // ตรวจสอบว่ามีการเปลี่ยนแปลงในวันที่หรือไม่
+        // เพิ่มเงื่อนไขเช็คว่ามีการเปลี่ยนแปลงในวันที่หรือไม่
         if (selectedDate != null &&
             originalDate != null &&
             selectedDate != originalDate) {
-          print('เข้าการส่งข้อมูล if ');
           // มีการเปลี่ยนแปลงในวันที่
           // ทำสิ่งที่คุณต้องการเมื่อมีการเปลี่ยนแปลง
           await usercollection.doc(document!.id).update({
@@ -249,7 +343,6 @@ class _EditPageState extends State<EditPage> {
             'timeInterest': selectedDate
           });
         } else {
-          print('เข้าการส่งข้อมูล else ');
           // ไม่มีการเปลี่ยนแปลงในวันที่
           // ใช้วันที่เดิม
           await usercollection.doc(document!.id).update({
@@ -555,10 +648,11 @@ class _EditPageState extends State<EditPage> {
                                           height: 20.0,
                                         ),
                                         Text(
-                                          timeInterest != null
+                                          selectedDate != null
                                               ? DateFormat.yMd("th").format(
-                                                  timeInterest) // แปลงวันที่เป็นภาษาไทย
-                                              : 'ยังไม่มีข้อมูลวันที่', // จัดการกรณีที่ไม่มีข้อมูลวันที่
+                                                  selectedDate!) // แปลงวันที่เป็นภาษาไทย
+                                              : DateFormat.yMd("th").format(
+                                                  originalDate!), // จัดการกรณีที่ไม่มีข้อมูลวันที่
                                           style: TextStyle(
                                             color: Theme.of(context)
                                                 .colorScheme
