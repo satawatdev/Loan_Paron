@@ -22,7 +22,7 @@ class _CustomDropdownButtonState extends State<CustomDropdownButton> {
     return DropdownButtonHideUnderline(
       child: DropdownButton2<String>(
         isExpanded: true,
-        hint: const Row(
+        hint: Row(
           children: [
             Icon(
               Icons.list,

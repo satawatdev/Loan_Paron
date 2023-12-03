@@ -3,6 +3,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:debtor_check/add_on/RoundedGreenButton.dart';
+import 'package:debtor_check/add_on/form_feild.dart';
 import 'package:debtor_check/add_on/richText.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,14 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+//todo: controller===================
+  TextEditingController ctlCollectInterestAmountManual =
+      TextEditingController(); //จำนวนดอกเบี้ย
+  TextEditingController ctlCollectAmountOfFine =
+      TextEditingController(); //จำนวนค่าปรับ
+  TextEditingController ctlCollectLoanAmount =
+      TextEditingController(); //เก็บเงินต้น
+
 //todo funtion_______________
   late int count;
   late int total;
@@ -150,7 +159,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 AsyncSnapshot<void> snapshot) {
                                               if (snapshot.connectionState ==
                                                   ConnectionState.waiting) {
-                                                return const Center(
+                                                return Center(
                                                   child: Column(
                                                     children: [
                                                       CircularProgressIndicator(),
@@ -468,7 +477,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     double cardHeight = MediaQuery.of(context).size.height *
-        0.4; // ให้ความสูงของ Card เป็น 60% ของความสูงหน้าจอ
+        0.8; // ให้ความสูงของ Card เป็น 60% ของความสูงหน้าจอ
     showDialog(
       context: context,
       builder: (_) => Dialog(
@@ -481,84 +490,146 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             child: Padding(
               padding: EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                // mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'เก็บเงิน',
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'เก็บเงิน',
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 1, // ความหนาของเส้น Divider
-                    child: Container(
-                      color: Colors.black, // สีของเส้น Divider
+                    SizedBox(
+                      height: 1, // ความหนาของเส้น Divider
+                      child: Container(
+                        color: Colors.black, // สีของเส้น Divider
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 30, // ความหนาของเส้น Divider
-                    child: Container(
-                        // color: Colors.black, // สีของเส้น Divider
+                    SizedBox(
+                      height: 30, // ความหนาของเส้น Divider
+                      child: Container(
+                          // color: Colors.black, // สีของเส้น Divider
+                          ),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        customtextspan(
+                          text1: 'จำนวนเงินต้น: ',
+                          text2: '${arguments!['LoanAmount']} บาท',
                         ),
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      customtextspan(
-                        text1: 'จำนวนเงินต้น: ',
-                        text2: '${arguments!['LoanAmount']} บาท',
-                      ),
-                      customtextspan(
-                        text1: 'จำนวนดอกเบี้ย: ',
-                        text2: '${arguments!['InterestAmount']} บาท',
-                      ),
-                      customtextspan(
-                        text1: 'จำนวนค่าปรับ: ',
-                        text2: '$count',
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      customtextspan(
-                        text1: 'รวม: ',
-                        text2: '$total บาท',
-                      ),
-                    ],
-                  ),
-                  // SizedBox(height: 12),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Expanded(
-                        child: RoundedGreenButton(
-                          colors: Colors.green,
-                          onPressed: () {
-                            admonneyFormount();
-                            payMonneyOnDelete();
-                          },
-                          text: isSaving
-                              ? const CircularProgressIndicator(
-                                  color: Colors.white,
-                                )
-                              : Text('ยืนยัน'),
+                        TextFormField(
+                          keyboardType: TextInputType.number,
+                          controller: ctlCollectLoanAmount,
+                          decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 16),
+                            labelText: 'กรอกจำนวนเงินต้น',
+                            prefixIcon: Icon(Icons.monetization_on_outlined),
+                            // เพิ่มเส้นขอบด้านล่างด้วย UnderlineInputBorder
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.grey), // สีขอบเส้น
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Colors
+                                      .blue), // สีขอบเส้นเมื่อได้รับการโฟกัส
+                            ),
+                          ),
                         ),
-                      ),
-                      Expanded(
-                        child: RoundedGreenButton(
-                          colors: Colors.red,
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          text: Text('ยกเลิก'),
+                        customtextspan(
+                          text1: 'จำนวนดอกเบี้ย: ',
+                          text2: '${arguments!['InterestAmount']} บาท',
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                        TextFormField(
+                          keyboardType: TextInputType.number,
+                          controller: ctlCollectInterestAmountManual,
+                          decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 16),
+                            labelText: 'กรอกจำนวนดอกเบี้ย',
+                            prefixIcon: Icon(Icons.monetization_on_outlined),
+                            // เพิ่มเส้นขอบด้านล่างด้วย UnderlineInputBorder
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.grey), // สีขอบเส้น
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Colors
+                                      .blue), // สีขอบเส้นเมื่อได้รับการโฟกัส
+                            ),
+                          ),
+                        ),
+                        customtextspan(
+                          text1: 'จำนวนค่าปรับ: ',
+                          text2: '$count',
+                        ),
+                        TextFormField(
+                          keyboardType: TextInputType.number,
+                          controller: ctlCollectAmountOfFine,
+                          decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 16),
+                            labelText: 'กรอกจำนวนค่าปรับ',
+                            prefixIcon: Icon(Icons.monetization_on_outlined),
+                            // เพิ่มเส้นขอบด้านล่างด้วย UnderlineInputBorder
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.grey), // สีขอบเส้น
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Colors
+                                      .blue), // สีขอบเส้นเมื่อได้รับการโฟกัส
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        customtextspan(
+                          text1: 'รวม: ',
+                          text2: '$total บาท',
+                        ),
+                      ],
+                    ),
+                    // SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Expanded(
+                          child: RoundedGreenButton(
+                            colors: Colors.green,
+                            onPressed: () {
+                              admonneyFormount();
+                              payMonneyOnDelete();
+                            },
+                            text: isSaving
+                                ? const CircularProgressIndicator(
+                                    color: Colors.white,
+                                  )
+                                : Text('ยืนยัน'),
+                          ),
+                        ),
+                        Expanded(
+                          child: RoundedGreenButton(
+                            colors: Colors.red,
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            text: Text('ยกเลิก'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -637,95 +708,140 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     double cardHeight = MediaQuery.of(context).size.height *
-        0.4; // ให้ความสูงของ Card เป็น 60% ของความสูงหน้าจอ
+        0.8; // ให้ความสูงของ Card เป็น 60% ของความสูงหน้าจอ
     showDialog(
       context: context,
       builder: (_) => Dialog(
         child: Container(
           height: cardHeight,
           child: Card(
-            elevation: 4.0,
+            // elevation: 4.0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),
             child: Padding(
               padding: EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                // mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'เก็บดอกเบี้ย',
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'เก็บดอกเบี้ย',
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 1, // ความหนาของเส้น Divider
-                    child: Container(
-                      color: Colors.black, // สีของเส้น Divider
+                    SizedBox(
+                      height: 1, // ความหนาของเส้น Divider
+                      child: Container(
+                        color: Colors.black, // สีของเส้น Divider
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 30, // ความหนาของเส้น Divider
-                    child: Container(
-                        // color: Colors.black, // สีของเส้น Divider
+                    SizedBox(
+                      height: 30, // ความหนาของเส้น Divider
+                      child: Container(
+                          // color: Colors.black, // สีของเส้น Divider
+                          ),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        customtextspan(
+                          text1: 'จำนวนดอกเบี้ย: ',
+                          text2: '${arguments!['InterestAmount']} บาท',
                         ),
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      customtextspan(
-                        text1: 'จำนวนดอกเบี้ย: ',
-                        text2: '${arguments!['InterestAmount']} บาท',
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      customtextspan(
-                        text1: 'จำนวนค่าปรับ: ',
-                        text2: '$count',
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      customtextspan(
-                        text1: 'รวม: ',
-                        text2: '$total บาท',
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Expanded(
-                        child: RoundedGreenButton(
-                          colors: Colors.green,
-                          onPressed: () async {
-                            payinterastmonney();
-                          },
-                          text: isSaving
-                              ? const CircularProgressIndicator(
-                                  color: Colors.white,
-                                )
-                              : Text('ยืนยัน'),
+                        TextFormField(
+                          keyboardType: TextInputType.number,
+                          controller: ctlCollectInterestAmountManual,
+                          decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 16),
+                            labelText: 'กรอกจำนวนดอกเบี้ย',
+                            prefixIcon: Icon(Icons.monetization_on_outlined),
+                            // เพิ่มเส้นขอบด้านล่างด้วย UnderlineInputBorder
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.grey), // สีขอบเส้น
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Colors
+                                      .blue), // สีขอบเส้นเมื่อได้รับการโฟกัส
+                            ),
+                          ),
                         ),
-                      ),
-                      Expanded(
-                        child: RoundedGreenButton(
-                          colors: Colors.red,
-                          onPressed: () async {
-                            Navigator.pop(context);
-                          },
-                          text: Text('ยกเลิก'),
+                        const SizedBox(
+                          height: 5,
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                        customtextspan(
+                          text1: 'จำนวนค่าปรับ: ',
+                          text2: '$count',
+                        ),
+                        TextFormField(
+                          keyboardType: TextInputType.number,
+                          controller: ctlCollectAmountOfFine,
+                          decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 16),
+                            labelText: 'กรอกจำนวนค่าปรับ',
+                            prefixIcon: Icon(Icons.monetization_on_outlined),
+                            // เพิ่มเส้นขอบด้านล่างด้วย UnderlineInputBorder
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.grey), // สีขอบเส้น
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Colors
+                                      .blue), // สีขอบเส้นเมื่อได้รับการโฟกัส
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: customtextspan(
+                            text1: 'รวม: ',
+                            text2: '$total บาท',
+                          ),
+                        ),
+                      ],
+                    ),
+                    // SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Expanded(
+                          child: RoundedGreenButton(
+                            colors: Colors.green,
+                            onPressed: () async {
+                              payinterastmonney();
+                            },
+                            text: isSaving
+                                ? const CircularProgressIndicator(
+                                    color: Colors.white,
+                                  )
+                                : Text('ยืนยัน'),
+                          ),
+                        ),
+                        Expanded(
+                          child: RoundedGreenButton(
+                            colors: Colors.red,
+                            onPressed: () async {
+                              Navigator.pop(context);
+                            },
+                            text: Text('ยกเลิก'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

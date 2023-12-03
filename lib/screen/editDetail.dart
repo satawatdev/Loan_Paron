@@ -452,7 +452,7 @@ class _EditPageState extends State<EditPage> {
                                                   const EdgeInsets.all(1.0),
                                               child: Column(
                                                 children: [
-                                                  const Row(
+                                                  Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment.end,
                                                     children: [],
