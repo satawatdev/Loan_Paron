@@ -37,6 +37,59 @@ class _ReportPageState extends State<ReportPage> {
   var fine = 0;
   var interest = 0;
 
+  // Future<void> fetchMonthData(int year, String month) async {
+  //   try {
+  //     final querySnapshot = await FirebaseFirestore.instance
+  //         .collection('MonthlyIncome')
+  //         .where('year', isEqualTo: year)
+  //         .where('month', isEqualTo: month)
+  //         .get();
+
+  //     final totalquerySnapshot = querySnapshot.docs.length;
+  //     print('เอกสารที่พบทั้งหมด : $totalquerySnapshot');
+
+  //     if (querySnapshot.docs.isNotEmpty) {
+  //       var totalFine = 0; // สร้างตัวแปรสำหรับเก็บค่าปรับทั้งหมด
+  //       var totalInterest = 0;
+
+  //       for (var index = 0; index < querySnapshot.docs.length; index++) {
+  //         var doc = querySnapshot.docs[index];
+  //         final data = doc.data() as Map<String, dynamic>;
+
+  //         if (data.containsKey('fine')) {
+  //           var fineData = data['fine'];
+
+  //           if (fineData is int) {
+  //             totalFine +=
+  //                 fineData; // เพิ่มค่าปรับในแต่ละเอกสารเข้าไปใน totalFine
+  //           } else if (fineData is List<int>) {
+  //             totalFine += fineData.reduce(
+  //                 (a, b) => a + b); // รวมค่าปรับใน List แล้วเพิ่มใน totalFine
+  //           }
+  //         }
+
+  //         if (data.containsKey('interest')) {
+  //           interest = data['interest'];
+  //           totalInterest += interest;
+  //         }
+  //       }
+
+  //       setState(() {
+  //         fine = totalFine;
+  //         interest = totalInterest;
+  //       });
+  //     } else {
+  //       setState(() {
+  //         fine = 0;
+  //         interest = 0;
+  //       });
+  //     }
+  //     print(fine);
+  //   } catch (e) {
+  //     print('เกิดข้อผิดพลาดกก: $e');
+  //   }
+  // }
+
   Future<void> fetchMonthData(int year, String month) async {
     try {
       final querySnapshot = await FirebaseFirestore.instance
@@ -62,15 +115,21 @@ class _ReportPageState extends State<ReportPage> {
             if (fineData is int) {
               totalFine +=
                   fineData; // เพิ่มค่าปรับในแต่ละเอกสารเข้าไปใน totalFine
-            } else if (fineData is List<int>) {
-              totalFine += fineData.reduce(
-                  (a, b) => a + b); // รวมค่าปรับใน List แล้วเพิ่มใน totalFine
+            } else if (fineData is String) {
+              // แปลง string เป็น int แล้วเพิ่มใน totalFine
+              totalFine += int.tryParse(fineData) ?? 0;
             }
           }
 
           if (data.containsKey('interest')) {
-            interest = data['interest'];
-            totalInterest += interest;
+            var interestData = data['interest'];
+
+            if (interestData is int) {
+              totalInterest += interestData;
+            } else if (interestData is String) {
+              // แปลง string เป็น int แล้วเพิ่มใน totalInterest
+              totalInterest += int.tryParse(interestData) ?? 0;
+            }
           }
         }
 

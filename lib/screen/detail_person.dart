@@ -9,6 +9,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+var datainterres = '';
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -20,6 +22,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 //todo: controller===================
   TextEditingController ctlCollectInterestAmountManual =
       TextEditingController(); //จำนวนดอกเบี้ย
+
   TextEditingController ctlCollectAmountOfFine =
       TextEditingController(); //จำนวนค่าปรับ
   TextEditingController ctlCollectLoanAmount =
@@ -87,6 +90,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Map<String, dynamic> data =
               (snapshot.data!.data() as Map<String, dynamic>);
           imageUrls = data['img'];
+
+          datainterres = data['InterestAmount'];
 
           //* เอาเวลาจาก Firestore เป็น timestamp แปลงเป็น datetime
           var selectedTime = (data['selectedtime'] as Timestamp).toDate();
@@ -679,29 +684,87 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
     }
 
-    payinterastmonney() async {
-      //เตรี่ยม firebase
+    //ฟังชั่นจ่ายค่าปรับโดยจะเก็บเข้าในยอดรวมแต่ละเดือนเลย
+    Amountoffine() async {
+      DateTime timenow = DateTime.now();
+      int month = timenow.month;
+      int year = timenow.year;
 
+      final List<String> thaiMonths = [
+        'มกราคม',
+        'กุมภาพันธ์',
+        'มีนาคม',
+        'เมษายน',
+        'พฤษภาคม',
+        'มิถุนายน',
+        'กรกฎาคม',
+        'สิงหาคม',
+        'กันยายน',
+        'ตุลาคม',
+        'พฤศจิกายน',
+        'ธันวาคม'
+      ];
+
+      CollectionReference MonthlyIncomecollection =
+          FirebaseFirestore.instance.collection('MonthlyIncome');
+
+      String userInput = ctlCollectInterestAmountManual.text.trim();
+      String fineInput = ctlCollectAmountOfFine.text.trim();
+
+      await MonthlyIncomecollection.add(
+        {
+          'interest': userInput, // ให้ใช้ค่าที่ผู้ใช้กรอกเข้ามา
+          'fine': fineInput,
+          'timenow': timenow,
+          'month': thaiMonths[month - 1],
+          'year': year
+        },
+      );
+    }
+
+    //ฟังชั่นจ่ายดอกเบี่้ย
+    payinterastmonney() async {
       try {
-        print('เข้า try จ่ายดอกเบี้ย');
+        // เตรียม Firebase
         final Future<FirebaseApp> firebase = Firebase.initializeApp();
         CollectionReference usercollection =
             FirebaseFirestore.instance.collection('user');
 
-        await usercollection
-            .doc(arguments!['docID'])
-            .update({'InterestAmount': '0', 'timeInterest': timenow});
+        // ตรวจสอบว่ามีการกรอกข้อมูลหรือไม่
+        String userInput = ctlCollectInterestAmountManual.text.trim();
+        int calculatedValue;
 
-        Navigator.pop(context);
+        if (userInput.isEmpty) {
+          // ถ้าไม่มีการกรอกข้อมูลให้ใช้ค่าที่คุณตั้งไว้
+          calculatedValue = 0;
+        } else {
+          // ถ้ามีการกรอกข้อมูลให้ทำการคำนวณ
+          int interestAmountFromDatabase =
+              int.tryParse(arguments['InterestAmount']) ?? 0;
+          int userInputValue = int.tryParse(userInput) ?? 0;
+          calculatedValue = interestAmountFromDatabase - userInputValue;
+        }
 
+        // ทำการ update ข้อมูลใน Firestore
+        await usercollection.doc(arguments!['docID']).update({
+          'InterestAmount': calculatedValue.toString(),
+          'timeInterest': timenow
+        });
+
+        Amountoffine();
+
+        // แสดง SnackBar
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('จ่ายดอกเบี้ยและค่าปรับสำเร็จ!'),
           ),
         );
 
+        // ปิดหน้าต่าง
         Navigator.pop(context);
-        admonneyFormount();
+
+        // ทำการอัพเดทข้อมูล
+        // admonneyFormount();
       } catch (e) {
         print('ออก catch จ่ายดอกเบี้ย เออเร่อ =' + e.toString());
       }
@@ -751,25 +814,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         customtextspan(
                           text1: 'จำนวนดอกเบี้ย: ',
-                          text2: '${arguments!['InterestAmount']} บาท',
+                          text2: '${datainterres} บาท',
+                          // text2: '${arguments!['InterestAmount']} บาท',
                         ),
                         TextFormField(
                           keyboardType: TextInputType.number,
                           controller: ctlCollectInterestAmountManual,
+                          onChanged: (value) {
+                            // ค่าที่ได้จากฐานข้อมูล
+                            var interestAmountFromDatabase =
+                                int.tryParse(arguments['InterestAmount']) ?? 0;
+
+                            // แปลงค่าที่กรอกจาก String เป็น int
+                            int userInput = int.tryParse(value) ?? 0;
+
+                            // ทำการลบค่าที่กรอกจากค่าที่ได้จากฐานข้อมูล
+                            var total = interestAmountFromDatabase - userInput;
+
+                            // แสดงผลลัพธ์ที่คำนวณได้ใน console
+                            print('❤️ผลลัพธ์คำนวณ❤️: $total');
+                          },
                           decoration: const InputDecoration(
                             contentPadding: EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 16),
                             labelText: 'กรอกจำนวนดอกเบี้ย',
                             prefixIcon: Icon(Icons.monetization_on_outlined),
-                            // เพิ่มเส้นขอบด้านล่างด้วย UnderlineInputBorder
                             enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.grey), // สีขอบเส้น
+                              borderSide: BorderSide(color: Colors.grey),
                             ),
                             focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Colors
-                                      .blue), // สีขอบเส้นเมื่อได้รับการโฟกัส
+                              borderSide: BorderSide(color: Colors.blue),
                             ),
                           ),
                         ),
@@ -783,20 +857,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         TextFormField(
                           keyboardType: TextInputType.number,
                           controller: ctlCollectAmountOfFine,
+                          onChanged: (value) {
+                            // ล็อกค่าที่ผู้ใช้กรอก
+                            print('ค่าที่กรอก: $value');
+                          },
                           decoration: const InputDecoration(
                             contentPadding: EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 16),
                             labelText: 'กรอกจำนวนค่าปรับ',
                             prefixIcon: Icon(Icons.monetization_on_outlined),
-                            // เพิ่มเส้นขอบด้านล่างด้วย UnderlineInputBorder
                             enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.grey), // สีขอบเส้น
+                              borderSide: BorderSide(color: Colors.grey),
                             ),
                             focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Colors
-                                      .blue), // สีขอบเส้นเมื่อได้รับการโฟกัส
+                              borderSide: BorderSide(color: Colors.blue),
                             ),
                           ),
                         ),
