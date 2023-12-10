@@ -800,6 +800,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
         // ปิดหน้าต่าง
         Navigator.pop(context);
+        Navigator.pushNamed(context, '/home');
 
         // ทำการอัพเดทข้อมูล
         // admonneyFormount();

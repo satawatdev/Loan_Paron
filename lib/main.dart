@@ -9,6 +9,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:debtor_check/screen/homepage.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -64,6 +65,7 @@ class MyApp extends StatelessWidget {
         '/detail': (context) => const ProfileScreen(),
         '/EditPage': (context) => const EditPage(),
         '/editoldphoto': (context) => const EditOldPhoto(),
+        '/home': (context) => HomeScreen(),
       },
     );
   }
