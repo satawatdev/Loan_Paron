@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 var datainterres = '';
+var dataLoan = '';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -29,6 +30,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       TextEditingController(); //เก็บเงินต้น
 
 //todo funtion_______________
+
+  //ฟังชันเคลีย controller
+  clearControllers() {
+    ctlCollectLoanAmount.clear();
+    ctlCollectInterestAmountManual.clear();
+    ctlCollectAmountOfFine.clear();
+  }
+
   late int count;
   late int total;
 //todo Variable Declaration(ตัวแปล)_______________
@@ -92,6 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           imageUrls = data['img'];
 
           datainterres = data['InterestAmount'];
+          dataLoan = data['LoanAmount'];
 
           //* เอาเวลาจาก Firestore เป็น timestamp แปลงเป็น datetime
           var selectedTime = (data['selectedtime'] as Timestamp).toDate();
@@ -382,7 +392,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               text1: 'ค่าปรับ: ',
                               text2: '$count บาท ',
                             ),
-                            SizedBox(height: 7),
+                            const SizedBox(height: 7),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -393,9 +403,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       showdDialogpaymoney(context);
                                     });
                                   },
-                                  text: Text('จ่ายเงิน'),
+                                  text: Text('จ่ายหนี้ทั้งหมด'),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 10,
                                 ),
                                 RoundedGreenButton(
@@ -470,10 +480,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       CollectionReference MonthlyIncomecollection =
           FirebaseFirestore.instance.collection('MonthlyIncome');
 
+      String fineInputLaon = ctlCollectAmountOfFine.text.trim();
+
       await MonthlyIncomecollection.add(
         {
           'interest': InterestAmountInt,
-          'fine': count,
+          'fine': fineInputLaon,
           'timenow': timenow,
           'month': thaiMonths[month - 1], // ส่งชื่อเดือนปัจจุบันเท่านั้น
           'year': year
@@ -482,8 +494,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     double cardHeight = MediaQuery.of(context).size.height *
-        0.8; // ให้ความสูงของ Card เป็น 60% ของความสูงหน้าจอ
+        0.5; // ให้ความสูงของ Card เป็น 60% ของความสูงหน้าจอ
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (_) => Dialog(
         child: Container(
@@ -501,7 +514,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   // mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      'เก็บเงิน',
+                      'จ่ายหนี้ทั้งหมด',
                       style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
@@ -527,50 +540,50 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           text1: 'จำนวนเงินต้น: ',
                           text2: '${arguments!['LoanAmount']} บาท',
                         ),
-                        TextFormField(
-                          keyboardType: TextInputType.number,
-                          controller: ctlCollectLoanAmount,
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 16),
-                            labelText: 'กรอกจำนวนเงินต้น',
-                            prefixIcon: Icon(Icons.monetization_on_outlined),
-                            // เพิ่มเส้นขอบด้านล่างด้วย UnderlineInputBorder
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.grey), // สีขอบเส้น
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Colors
-                                      .blue), // สีขอบเส้นเมื่อได้รับการโฟกัส
-                            ),
-                          ),
-                        ),
+                        // TextFormField(
+                        //   keyboardType: TextInputType.number,
+                        //   controller: ctlCollectLoanAmount,
+                        //   decoration: const InputDecoration(
+                        //     contentPadding: EdgeInsets.symmetric(
+                        //         horizontal: 16, vertical: 16),
+                        //     labelText: 'กรอกจำนวนเงินต้น',
+                        //     prefixIcon: Icon(Icons.monetization_on_outlined),
+                        //     // เพิ่มเส้นขอบด้านล่างด้วย UnderlineInputBorder
+                        //     enabledBorder: UnderlineInputBorder(
+                        //       borderSide:
+                        //           BorderSide(color: Colors.grey), // สีขอบเส้น
+                        //     ),
+                        //     focusedBorder: UnderlineInputBorder(
+                        //       borderSide: BorderSide(
+                        //           color: Colors
+                        //               .blue), // สีขอบเส้นเมื่อได้รับการโฟกัส
+                        //     ),
+                        //   ),
+                        // ),
                         customtextspan(
                           text1: 'จำนวนดอกเบี้ย: ',
                           text2: '${arguments!['InterestAmount']} บาท',
                         ),
-                        TextFormField(
-                          keyboardType: TextInputType.number,
-                          controller: ctlCollectInterestAmountManual,
-                          decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 16),
-                            labelText: 'กรอกจำนวนดอกเบี้ย',
-                            prefixIcon: Icon(Icons.monetization_on_outlined),
-                            // เพิ่มเส้นขอบด้านล่างด้วย UnderlineInputBorder
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.grey), // สีขอบเส้น
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Colors
-                                      .blue), // สีขอบเส้นเมื่อได้รับการโฟกัส
-                            ),
-                          ),
-                        ),
+                        // TextFormField(
+                        //   keyboardType: TextInputType.number,
+                        //   controller: ctlCollectInterestAmountManual,
+                        //   decoration: const InputDecoration(
+                        //     contentPadding: EdgeInsets.symmetric(
+                        //         horizontal: 16, vertical: 16),
+                        //     labelText: 'กรอกจำนวนดอกเบี้ย',
+                        //     prefixIcon: Icon(Icons.monetization_on_outlined),
+                        //     // เพิ่มเส้นขอบด้านล่างด้วย UnderlineInputBorder
+                        //     enabledBorder: UnderlineInputBorder(
+                        //       borderSide:
+                        //           BorderSide(color: Colors.grey), // สีขอบเส้น
+                        //     ),
+                        //     focusedBorder: UnderlineInputBorder(
+                        //       borderSide: BorderSide(
+                        //           color: Colors
+                        //               .blue), // สีขอบเส้นเมื่อได้รับการโฟกัส
+                        //     ),
+                        //   ),
+                        // ),
                         customtextspan(
                           text1: 'จำนวนค่าปรับ: ',
                           text2: '$count',
@@ -614,6 +627,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             onPressed: () {
                               admonneyFormount();
                               payMonneyOnDelete();
+                              clearControllers();
                             },
                             text: isSaving
                                 ? const CircularProgressIndicator(
@@ -626,6 +640,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: RoundedGreenButton(
                             colors: Colors.red,
                             onPressed: () {
+                              clearControllers();
                               Navigator.pop(context);
                             },
                             text: Text('ยกเลิก'),
@@ -648,41 +663,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final Map<String, dynamic>? arguments =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     int InterestAmountInt = int.parse(arguments!['InterestAmount']);
-    total = InterestAmountInt + count;
+    int LoenAmountInt = int.parse(arguments!['LoanAmount']);
 
-    void admonneyFormount() async {
-      DateTime timenow = DateTime.now();
-      int month = timenow.month;
-      int year = timenow.year;
+    total = InterestAmountInt + LoenAmountInt;
 
-      final List<String> thaiMonths = [
-        'มกราคม',
-        'กุมภาพันธ์',
-        'มีนาคม',
-        'เมษายน',
-        'พฤษภาคม',
-        'มิถุนายน',
-        'กรกฎาคม',
-        'สิงหาคม',
-        'กันยายน',
-        'ตุลาคม',
-        'พฤศจิกายน',
-        'ธันวาคม'
-      ];
+    // void admonneyFormount() async {
+    //   DateTime timenow = DateTime.now();
+    //   int month = timenow.month;
+    //   int year = timenow.year;
 
-      CollectionReference MonthlyIncomecollection =
-          FirebaseFirestore.instance.collection('MonthlyIncome');
+    //   final List<String> thaiMonths = [
+    //     'มกราคม',
+    //     'กุมภาพันธ์',
+    //     'มีนาคม',
+    //     'เมษายน',
+    //     'พฤษภาคม',
+    //     'มิถุนายน',
+    //     'กรกฎาคม',
+    //     'สิงหาคม',
+    //     'กันยายน',
+    //     'ตุลาคม',
+    //     'พฤศจิกายน',
+    //     'ธันวาคม'
+    //   ];
 
-      await MonthlyIncomecollection.add(
-        {
-          'interest': InterestAmountInt,
-          'fine': count,
-          'timenow': timenow,
-          'month': thaiMonths[month - 1], // ส่งชื่อเดือนปัจจุบันเท่านั้น
-          'year': year
-        },
-      );
-    }
+    //   CollectionReference MonthlyIncomecollection =
+    //       FirebaseFirestore.instance.collection('MonthlyIncome');
+
+    //   await MonthlyIncomecollection.add(
+    //     {
+    //       'interest': InterestAmountInt,
+    //       'fine': count,
+    //       'timenow': timenow,
+    //       'month': thaiMonths[month - 1], // ส่งชื่อเดือนปัจจุบันเท่านั้น
+    //       'year': year
+    //     },
+    //   );
+    // }
 
     //ฟังชั่นจ่ายค่าปรับโดยจะเก็บเข้าในยอดรวมแต่ละเดือนเลย
     Amountoffine() async {
@@ -735,8 +752,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         int calculatedValue;
 
         if (userInput.isEmpty) {
-          // ถ้าไม่มีการกรอกข้อมูลให้ใช้ค่าที่คุณตั้งไว้
-          calculatedValue = 0;
+          // ถ้าไม่มีการกรอกข้อมูลให้ใช้ค่าที่มีอยู่ในฐานข้อมูล
+          int interestAmountFromDatabase =
+              int.tryParse(arguments['InterestAmount']) ?? 0;
+          calculatedValue = interestAmountFromDatabase;
         } else {
           // ถ้ามีการกรอกข้อมูลให้ทำการคำนวณ
           int interestAmountFromDatabase =
@@ -744,10 +763,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
           int userInputValue = int.tryParse(userInput) ?? 0;
           calculatedValue = interestAmountFromDatabase - userInputValue;
         }
+        ;
+
+        // ตรวจสอบว่ามีการกรอกข้อมูลหรือไม่
+        String userInputLoen = ctlCollectLoanAmount.text.trim();
+        int LoencalculatedValue;
+
+        if (userInputLoen.isEmpty) {
+          // ถ้าไม่มีการกรอกข้อมูลให้ใช้ค่าที่มีอยู่ในฐานข้อมูล
+          int LoenAmountFromDatabase =
+              int.tryParse(arguments['LoanAmount']) ?? 0;
+          LoencalculatedValue = LoenAmountFromDatabase;
+        } else {
+          // ถ้ามีการกรอกข้อมูลให้ทำการคำนวณ
+          int LoneAmountFromDatabase =
+              int.tryParse(arguments['LoanAmount']) ?? 0;
+          int userInputValue = int.tryParse(userInputLoen) ?? 0;
+          LoencalculatedValue = LoneAmountFromDatabase - userInputValue;
+        }
 
         // ทำการ update ข้อมูลใน Firestore
         await usercollection.doc(arguments!['docID']).update({
           'InterestAmount': calculatedValue.toString(),
+          'LoanAmount': LoencalculatedValue.toString(),
           'timeInterest': timenow
         });
 
@@ -773,6 +811,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     double cardHeight = MediaQuery.of(context).size.height *
         0.8; // ให้ความสูงของ Card เป็น 60% ของความสูงหน้าจอ
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (_) => Dialog(
         child: Container(
@@ -790,7 +829,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   // mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      'เก็บดอกเบี้ย',
+                      'เก็บดอกเบี้ย/เงินกู้',
                       style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
@@ -813,6 +852,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         customtextspan(
+                          text1: 'จำนวนเงินกู้: ',
+                          text2: '${dataLoan} บาท',
+                          // text2: '${arguments!['InterestAmount']} บาท',
+                        ),
+                        TextFormField(
+                          keyboardType: TextInputType.number,
+                          controller: ctlCollectLoanAmount,
+                          onChanged: (value) {
+                            // ค่าที่ได้จากฐานข้อมูล
+                            var LoanAmountFromDatabase =
+                                int.tryParse(arguments['LoanAmount']) ?? 0;
+
+                            // แปลงค่าที่กรอกจาก String เป็น int
+                            int userInput = int.tryParse(value) ?? 0;
+
+                            // ทำการลบค่าที่กรอกจากค่าที่ได้จากฐานข้อมูล
+                            var Loantotal = LoanAmountFromDatabase - userInput;
+
+                            // แสดงผลลัพธ์ที่คำนวณได้ใน console
+                            print('❤️ผลลัพธ์คำนวณ❤️: $Loantotal');
+                          },
+                          decoration: const InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 16),
+                            labelText: 'กรอกจำนวนเงินกู้',
+                            prefixIcon: Icon(Icons.monetization_on_outlined),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blue),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        customtextspan(
                           text1: 'จำนวนดอกเบี้ย: ',
                           text2: '${datainterres} บาท',
                           // text2: '${arguments!['InterestAmount']} บาท',
@@ -829,10 +906,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             int userInput = int.tryParse(value) ?? 0;
 
                             // ทำการลบค่าที่กรอกจากค่าที่ได้จากฐานข้อมูล
-                            var total = interestAmountFromDatabase - userInput;
+                            var interestotal =
+                                interestAmountFromDatabase - userInput;
 
                             // แสดงผลลัพธ์ที่คำนวณได้ใน console
-                            print('❤️ผลลัพธ์คำนวณ❤️: $total');
+                            print('❤️ผลลัพธ์คำนวณ❤️: $interestotal');
                           },
                           decoration: const InputDecoration(
                             contentPadding: EdgeInsets.symmetric(
@@ -894,6 +972,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: RoundedGreenButton(
                             colors: Colors.green,
                             onPressed: () async {
+                              clearControllers();
                               payinterastmonney();
                             },
                             text: isSaving
@@ -907,6 +986,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: RoundedGreenButton(
                             colors: Colors.red,
                             onPressed: () async {
+                              // ล้างข้อมูลที่กรอกใน TextFormFields
+                              clearControllers();
                               Navigator.pop(context);
                             },
                             text: Text('ยกเลิก'),
