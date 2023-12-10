@@ -972,8 +972,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: RoundedGreenButton(
                             colors: Colors.green,
                             onPressed: () async {
-                              clearControllers();
                               payinterastmonney();
+                              clearControllers();
                             },
                             text: isSaving
                                 ? const CircularProgressIndicator(
